@@ -1,0 +1,73 @@
+// ── TIMEFRAMES ────────────────────────────────────────────────────────────────
+export const TIMEFRAMES = [
+  { id: "auto", label: "AUTO", interval: "1d", range: "1y",  bars: null },
+  { id: "2w",   label: "2W",   interval: "1h", range: "1mo", bars: 80   },
+  { id: "1m",   label: "1M",   interval: "1d", range: "3mo", bars: 22   },
+  { id: "3m",   label: "3M",   interval: "1d", range: "6mo", bars: 66   },
+  { id: "6m",   label: "6M",   interval: "1d", range: "1y",  bars: 132  },
+  { id: "1y",   label: "1Y",   interval: "1d", range: "2y",  bars: 252  },
+];
+
+// ── PATTERN METADATA (bilingual) ──────────────────────────────────────────────
+export const PATTERN_INFO = {
+  "Head & Shoulders": {
+    signal: "bearish",
+    risk:         { he: "גבוה",  en: "High"   },
+    bestTF:       ["3m", "6m"],
+    bestTFLabel:  { he: "3–6 חודשים",       en: "3–6 months"         },
+    shortDesc:    { he: "היפוך מגמה — ראש ושתי כתפיים", en: "Trend reversal — head and two shoulders" },
+    description:  { he: "3 פסגות: הראש גבוה יותר, הכתפיים דומות.", en: "3 peaks: head higher than both shoulders, shoulders similar height." },
+    action:       { he: "פריצה מתחת לקו הצוואר = אות מכירה חזק.", en: "Break below the neckline = strong sell signal." },
+    tfTip:        { he: "המבנה נבנה לאט. הכי אמין ב-3 עד 6 חודשים.", en: "This pattern forms slowly. Most reliable over 3–6 months." },
+  },
+  "Double Bottom": {
+    signal: "bullish",
+    risk:         { he: "בינוני", en: "Medium" },
+    bestTF:       ["3m", "6m"],
+    bestTFLabel:  { he: "2–4 חודשים",       en: "2–4 months"         },
+    shortDesc:    { he: "תמיכה כפולה — הקונים חזקים", en: "Double support — buyers are strong" },
+    description:  { he: "שתי שפל דומות עם לפחות 10 ימים ביניהן.", en: "Two similar lows at least 10 days apart." },
+    action:       { he: "כניסה מעל השיא שבין שתי הנקודות.", en: "Enter above the peak between the two lows." },
+    tfTip:        { he: "הכי מדויק ב-2 עד 4 חודשים.", en: "Most accurate over a 2–4 month window." },
+  },
+  "Breakout": {
+    signal: "bullish",
+    risk:         { he: "נמוך",  en: "Low"    },
+    bestTF:       ["1m", "3m"],
+    bestTFLabel:  { he: "חודש עד 3 חודשים",  en: "1–3 months"         },
+    shortDesc:    { he: "פריצת גבוה התקופה עם מומנטום", en: "Period high breakout with momentum" },
+    description:  { he: "המחיר עבר את הגבוה של התקופה ב-1%+.", en: "Price broke above the period's high by 1%+." },
+    action:       { he: "כניסה בפריצה. סטופ מתחת לרמת ההתנגדות.", en: "Enter on the breakout. Stop below the resistance level." },
+    tfTip:        { he: "ככל שהתקופה ארוכה יותר — הפריצה משמעותית יותר.", en: "The longer the period, the more significant the breakout." },
+  },
+  "Flag": {
+    signal: "bullish",
+    risk:         { he: "נמוך",  en: "Low"    },
+    bestTF:       ["2w", "1m"],
+    bestTFLabel:  { he: "שבועיים עד חודש",   en: "2 weeks to 1 month" },
+    shortDesc:    { he: "תיקון בריא לפני המשך מגמה", en: "Healthy pullback before trend continuation" },
+    description:  { he: "עלייה חדה (מוט) ואחריה תיקון מסודר הנוטה מטה.", en: "Sharp rise (pole) followed by a tight downward-sloping consolidation (flag)." },
+    action:       { he: "כניסה בפריצה מהדגל. יעד = גובה המוט.", en: "Enter on the flag breakout. Target = pole height." },
+    tfTip:        { he: "הדגל נבנה תוך ימים — הכי נקי בשבועיים עד חודש.", en: "The flag forms over days — cleanest on a 2-week to 1-month window." },
+  },
+  "RSI Divergence": {
+    signal: "warning",
+    risk:         { he: "גבוה",  en: "High"   },
+    bestTF:       ["1m", "3m"],
+    bestTFLabel:  { he: "4–8 שבועות",        en: "4–8 weeks"          },
+    shortDesc:    { he: "מחיר עולה, מומנטום יורד", en: "Price rising, momentum falling" },
+    description:  { he: "שיאים גבוהים יותר במחיר, RSI לא מאשר.", en: "Higher price highs but RSI is not confirming — momentum is weakening." },
+    action:       { he: "הפחת חשיפה. המתן לאישור.", en: "Reduce exposure. Wait for confirmation." },
+    tfTip:        { he: "הכי מדויק ב-4 עד 8 שבועות.", en: "Most accurate over a 4–8 week window." },
+  },
+  "Golden Cross": {
+    signal: "bullish",
+    risk:         { he: "נמוך",  en: "Low"    },
+    bestTF:       ["1y"],
+    bestTFLabel:  { he: "שנה ומעלה",          en: "1 year+"            },
+    shortDesc:    { he: "MA50 חצה מעל MA200", en: "MA50 crossed above MA200" },
+    description:  { he: "ממוצע 50 יום חצה מעל ממוצע 200 יום.", en: "The 50-day moving average crossed above the 200-day moving average." },
+    action:       { he: "קנייה לטווח ארוך.", en: "Long-term buy signal." },
+    tfTip:        { he: "חייב שנה מלאה של נתונים. בפחות — לא אמין.", en: "Requires a full year of data. Less than that — unreliable." },
+  },
+};
