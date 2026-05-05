@@ -58,6 +58,9 @@ export const PatternsCard = ({
                 background: isSel ? bgMap[info.signal] : T.bg,
                 border: `1.5px solid ${isSel ? borderMap[info.signal] : T.border}`,
                 transition: "all 0.2s",
+                userSelect: "none",
+                WebkitUserSelect: "none",
+                direction: "ltr",
               }}
             >
               {/* Row header */}
