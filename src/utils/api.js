@@ -103,92 +103,22 @@ const parseFinnhub = json => {
   };
 };
 
-// ── fetchStockData — Yahoo → Finnhub → Claude AI → demo mock ──────────────────
+// ── fetchStockData — /api/stock proxy → demo mock ─────────────────────────────
 export const fetchStockData = async (symbol, interval, range, apiKeys = {}) => {
-
-  // 1. Yahoo Finance
+  // Call our server-side proxy (bypasses CORS)
   try {
-    const ctrl  = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 7000);
-    const resp  = await fetch(
-      `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`,
-      { signal: ctrl.signal }
+    const resp = await fetch(
+      `/api/stock?symbol=${encodeURIComponent(symbol)}&interval=${interval}&range=${range}`
     );
-    clearTimeout(timer);
     if (resp.ok) {
-      const json = await safeJson(resp);
-      if (json?.chart?.result?.[0]) return { ...parseYahoo(json), source: "yahoo" };
+      const data = await safeJson(resp);
+      if (data?.closes?.length >= 5) return data;
     }
   } catch (err) {
     if (!isSafeError(err)) throw err;
   }
 
-  // 2. Finnhub
-  if (apiKeys.finnhub) {
-    try {
-      const res  = { "1h": "60", "1d": "D" }[interval] || "D";
-      const to   = Math.floor(Date.now() / 1000);
-      const days = range === "1mo" ? 30 : range === "3mo" ? 90 : range === "6mo" ? 180 : 365;
-      const resp = await fetch(
-        `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=${res}&from=${to - days * 86400}&to=${to}&token=${apiKeys.finnhub}`
-      );
-      if (resp.ok) {
-        const json = await safeJson(resp);
-        if (json?.s === "ok" && json.c?.length)
-          return { ...parseFinnhub(json), source: "finnhub" };
-      }
-    } catch (err) {
-      if (!isSafeError(err)) throw err;
-    }
-  }
-
-  // 3. Claude AI with web search
-  try {
-    const aiResp = await fetch("https://api.anthropic.com/v1/messages", {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model:      "claude-sonnet-4-20250514",
-        max_tokens: 3000,
-        tools:      [{ type: "web_search_20250305", name: "web_search" }],
-        messages:   [{
-          role:    "user",
-          content:
-            `Search for current real stock market data for ticker "${symbol}". ` +
-            `Return ONLY a raw JSON object (no markdown, no backticks): ` +
-            `{"price":<number>,"change1d":<number>,"change1w":<number>,"change1m":<number>,` +
-            `"volume":"<e.g. 48.2M>","closes":[<60 daily closes oldest-first ending at current price>]}`,
-        }],
-      }),
-    });
-    if (aiResp.ok) {
-      const data    = await aiResp.json();
-      const rawText = data.content.filter(b => b.type === "text").map(b => b.text).join("");
-      const cleaned = rawText.replace(/```json/gi, "").replace(/```/g, "").trim();
-      const s = cleaned.indexOf("{"), e = cleaned.lastIndexOf("}");
-      if (s !== -1 && e !== -1) {
-        const p      = JSON.parse(cleaned.slice(s, e + 1));
-        const closes = Array.isArray(p.closes)
-          ? p.closes.filter(v => typeof v === "number" && isFinite(v))
-          : [];
-        if (closes.length >= 5) {
-          return {
-            price:    parseFloat(p.price).toFixed(2),
-            change1d: parseFloat(p.change1d) || 0,
-            change1w: parseFloat(p.change1w) || 0,
-            change1m: parseFloat(p.change1m) || 0,
-            volume:   p.volume || "N/A",
-            closes,
-            source:   "ai",
-          };
-        }
-      }
-    }
-  } catch (err) {
-    if (!isSafeError(err)) throw err;
-  }
-
-  // 4. Demo fallback — never throws
+  // Demo fallback
   return mockStockData(symbol);
 };
 
