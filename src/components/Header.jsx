@@ -78,6 +78,21 @@ export const Header = ({
                 </button>
               ))}
             </div>
+            {/* Feedback */}
+            <a
+              href="https://forms.gle/5WSQgj2gCwineew16"
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                padding: "6px 11px", borderRadius: 99,
+                background: "rgba(255,255,255,0.15)",
+                color: "#fff", fontSize: 12, fontWeight: 500,
+                textDecoration: "none", display: "flex", alignItems: "center", gap: 4,
+                transition: "background 0.15s",
+              }}
+            >
+              💬 {lang === "he" ? "פידבק" : "Feedback"}
+            </a>
             {/* Settings */}
             <button onClick={onOpenSettings} style={{
               padding: "6px 11px", borderRadius: 99, border: "none", cursor: "pointer",
